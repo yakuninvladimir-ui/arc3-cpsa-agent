@@ -1220,9 +1220,22 @@ def bind_world_model_api(wmlib, falsified_ledger, step_single_action_fn,
             print("\n".join(step_reports))
             return out
 
+        # non_hud must be defined even if EVERY action in the batch is
+        # guard-skipped (the COMPLETED return below reads the last value).
+        non_hud = []
         for idx, act_name in enumerate(action_list):
             rec = _step_and_record(act_name)
             executed.append(act_name)
+            if getattr(rec, "seq_id", 0) == -1 or getattr(rec, "action", "") == "SKIPPED":
+                # Guard-skipped action (e.g. the redundant-RESET skip at step 0):
+                # 0 actions were spent and no real transition occurred, so the
+                # no-op / hidden-animation / expectation halts must NOT fire on
+                # this fake record - the batch continues (CPSA 2.3 regression fix;
+                # test_redundant_reset_no_typeerror).
+                step_reports.append(
+                    f"Step {idx + 1} ({act_name}): SKIPPED by guard (0 actions spent)."
+                )
+                continue
             if rec.level_completed:
                 step_reports.append(f"Step {idx + 1} ({act_name}): LEVEL {rec.level} COMPLETED!")
                 return _finish("LEVEL_COMPLETED", idx, "FOLLOW")
@@ -1249,10 +1262,18 @@ def bind_world_model_api(wmlib, falsified_ledger, step_single_action_fn,
                 notify_hypothesis_falsified_fn(msg)
                 return _finish("HIDDEN_ANIMATION_STOP", idx, "UNDECIDED")
 
-            if len(non_hud) == 0 and len(action_list) > 1:
+            # 2.3 defect №8: halt on unexpected no-op so the chain does not keep
+            # walking into a wall. The halt exists to abort the *remaining tail*
+            # of a multi-step batch; on the FINAL step there is nothing left to
+            # abort, so a no-op there is merely reported (CPSA 2.2 semantics) and
+            # must not relabel a fully executed batch as EXPECTATION_MISMATCH -
+            # nor write a bogus entry into the falsified-hypothesis store
+            # (regression: test_redundant_reset_no_typeerror).
+            remaining_after = len(action_list) - idx - 1
+            if len(non_hud) == 0 and remaining_after > 0:
                 msg = (
                     f"Step {idx + 1} ({act_name}): HALTED ON UNEXPECTED NO-OP! 0 non-HUD cells "
-                    f"changed. Remaining {len(action_list) - idx - 1} steps aborted."
+                    f"changed. Remaining {remaining_after} steps aborted."
                 )
                 step_reports.append(msg)
                 notify_hypothesis_falsified_fn(msg)
