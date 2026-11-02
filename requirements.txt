@@ -1,0 +1,20 @@
+# Core dependencies
+arc-agi-3-local @ git+https://github.com/Tufalabs/re-arc-3.git@master
+arcengine>=0.9.3
+numpy>=1.24.0
+scipy>=1.10.0
+matplotlib>=3.8.0
+Pillow>=10.0.0
+imageio>=2.30.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# Optional server backends (uncomment as needed)
+# sglang>=0.4.0
+# vllm>=0.6.0
+# flashinfer>=0.2.0
+
+# Development and testing
+pytest>=8.0.0
+ruff>=0.4.0

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arc3-cpsa-agent"
+version = "2.3.0"
+description = "Continuous Python-Symbolic Agent (CPSA 2.3) for ARC Prize 2026 / ARC-AGI-3"
+readme = "README.md"
+authors = [
+    { name = "Vladimir Yakunin" },
+]
+requires-python = ">=3.10"
+keywords = ["arc-agi", "arc-prize-2026", "symbolic-ai", "world-model", "moe", "llm-agent"]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "arcengine>=0.9.3",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "matplotlib>=3.8.0",
+    "Pillow>=10.0.0",
+    "imageio>=2.30.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+server = [
+    "sglang>=0.4.0",
+    "vllm>=0.6.0",
+]
+
+[project.scripts]
+arc3-run = "inference.framework.run:main"
+arc3-view = "viewer.server:main"
+arc3-eval = "inference.tools.eval:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["inference*", "taaf*", "viewer*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "inference/agent"]
