@@ -2,6 +2,10 @@
 
 State-of-the-art autonomous symbolic game-solving agent developed for the **ARC Prize 2026 (ARC-AGI-3)** competition.
 
+Built upon and extending foundational open-source solutions from:
+* **Tufa Labs** — [duck-harness](https://github.com/Tufalabs/duck-harness) (TAAF evaluation stack & tool harness architecture)
+* **Daniel Franzen** — [arc-agi-3-solution](https://github.com/da-fr/arc-agi-3-solution) (groundbreaking ARC-AGI-3 solving methodology and agent concepts)
+
 CPSA 2.3 unifies large-scale autoregressive reasoning with dynamic symbolic program synthesis, verifiable Moore World Models, $V_4$ semantic judges, priority stream rotation, and cross-level persistent invariant retention.
 
 ---
@@ -99,6 +103,14 @@ Run the test suite:
 ```bash
 pytest
 ```
+
+---
+
+## Acknowledgements & Attribution
+
+This project builds upon the pioneering work of the ARC-AGI research community. In particular, we gratefully acknowledge:
+* **[Tufa Labs](https://github.com/Tufalabs)** for [duck-harness](https://github.com/Tufalabs/duck-harness) and the TAAF benchmark framework.
+* **[Daniel Franzen (da-fr)](https://github.com/da-fr)** for [arc-agi-3-solution](https://github.com/da-fr/arc-agi-3-solution), whose foundational ideas, architecture, and exploration strategies inspired this implementation.
 
 ---
 
